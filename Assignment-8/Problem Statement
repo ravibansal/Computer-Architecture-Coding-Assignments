@@ -1,0 +1,48 @@
+Aim
+
+Algorithmic state machine design (versus finite stae machine design) comrpising a datapath and an FSM controller
+Understanding the mechanism and benefits of radix-4 Booth's multiplication (BMR4) algorithm
+Realizing the BMR4 by
+a datapath comprising data storage registers for the variables, an ALU (adder/subtractor/shifter) as the functional unit, and a status detector for assessing the data states, and
+a controller to interact with its environment to load operands and deliver results, and with the datapath for carrying out multiplication.
+Assignment statement
+
+You are required to implement, simulate and analyse a radix-4 Booth's multiplier for 16-bits.
+
+The decision table for carrying out the operations in each step are as follows:
+
+xi+1	 xi 	xi-1	Indication	                        Action
+0	      0	    0	  run of zeroes 	                    --
+0	      1	    0	  isolated one at xi	                +M
+1	      0	    0	  start of a run of ones at xi+1	    −2M
+1	      1	    0	  start of a run of ones at xi	      −M
+0	      0	    1	  end of a run of ones at xi-1	      +M
+0	      1	    1	  end of a run of ones at xi	        +2M
+1	      0	    1	  isolated 0 at xi	                   −M
+1	      1	    1	  run of ones                       	--
+You should do a comparison of your multiplier with a shift and add multiplier and also the radix-2 Booth's multipler for cost and speed.
+
+The controller should have the facility to load the multiplicand and the multiplier one after the other when the load signal is asserted.
+
+Multiplication should start only after the load signal is withdrawn after the operands have been loaded.
+
+After the multiplication is complete, the done signal should be asserted
+
+Steps to be followed
+
+To understand the working of the algorithm, hand execute with multiplicand M=15 and multiplier Q=-7, both in 8-bits 2's complement representation. Note that the result will be obtained in four steps; in each step the partial product (A:Q) will be arithmetically shifted right (i.e. with sign extension) by two bits.
+Draw a flow chart for the algorithm, let it be designated as BMR4FC
+Datapath design
+Map the variables in BMR4FC to data storage registers; identify the control signals around the registers (such as the register write signal)
+Identify the functional unit(s); list out the control signals corresponding to the functions of the units (such as add, subtract)
+Identify the data state status detectors -- either to be connected locally at the outputs of the registers or globally at the outputs of the functional units; list the status signal ouputs from the datapath
+Draw the datapath with its data inputs coming from the environment and control inputs coming from the controller, its data outputs to the environment and status outputs to the controller; indicate the interconnections of the registers, the functional units and the status detectors
+Design structurally the datapath comprising the regsiters, the functional units and the status detectors
+FSM controller design
+Identify the FSM controller with environment driven inputs (such as the load operands signal) and status inputs from the datapath and with output control signals for the datapath and the environment
+Obtain the state transition diagram from BMR4FC by replacing in each of its state boxes, the register transfer operations with the corresponding register and functional unit control signals (from the FSM controller); replace the data condition test blocks in BMR4FC by the corresponding status signal outputs from the datapath
+Realise the FSM state transition diagram (as a Moore m/c) structurally
+Combine the datapath and the FSM controller and then proceed to simulating and testing the design
+Students in section-1 should use the COA virtual lab facilty. The datapath should be strictly structural but the controller should be built using the FSM design tool using the minimum number of states.
+
+Students in section-2 should design the entire datapath in structural Verilog (strictly), but should do the controller in behavioural Verilog using the minimum number of states.
