@@ -1,0 +1,199 @@
+#Sayan Mukhopadhyay(13CS30028)
+#Ravi Bansal(13CS30026)
+#Group No-49(Machine No-56)
+.data
+label1: .asciiz "Enter two positive integers s, b:\n"
+label2: .asciiz "Elements for A:"
+label3: .asciiz "Elements for B:"
+label4: .asciiz " "
+label5: .asciiz "\n"
+label6: .asciiz "Elements for C:"
+.text
+main:				#main function starts
+	li $v0,4
+	la $a0,label1   #print the string to enter s and b
+	syscall
+	li $v0,5
+	syscall         #get input in v0
+	move $t0,$v0    #store s in t0
+	move $t6,$t0
+	li $v0,5		
+	syscall			#get input in v0
+	move $t1,$v0 	#store b in t1
+	li $t2,0 		#initialize counter t2=0
+	li $a0,1 		#temporary variable to store 2^b
+power:	#loop to calculate 2^b
+	bge $t2,$t1,cont #check if t2<=b
+	mul $a0,$a0,2	 
+	add $t2,$t2,1	#increment counter by 1
+	b power
+cont:
+	move $t1,$a0 	#t1=m
+	move $t2,$a0	#t2=n   here m=n=w=2^b
+	move $fp,$sp    #store old frame pointer to stack pointer
+	mul $t3,$t1,$t2 #t3=m*n
+	mul $t3,$t3,-12 #t3=-12*m*n
+	add $sp,$sp,$t3 #sp=sp-12*m*n (allocating space for three mxn arrays A,B and C)
+	li $t4,-1        #initialize counter i for populateA
+populateA1:
+	add $t4,$t4,1
+	bge $t4,$t1,initializeseedforB #check if t4<=m.If no call to populate array B
+	li $t5,0 #if yesinitialize counter j to 0
+populateA2:
+	bge $t5,$t2,populateA1 #check if t5<=n
+	add $fp,$fp,-4	 #move frame pointer
+	sw 	$t6,0($fp)	 #A[i][j]=t6
+	mul $t6,$t6,330	 #to calculate next random number
+	add $t6,$t6,100
+	rem $t6,$t6,2303
+	add $t5,$t5,1    #increment counter j by 1
+	b populateA2     #continue to loop
+
+initializeseedforB:#initializing seed for populating array B
+	add $t6,$t0,10
+	li $t4,-1      #initialize counter i
+populateB1:
+	add $t4,$t4,1  #increment counter i
+	bge $t4,$t1,callmatprint #check if i<n.if false then go for printing of matrices
+	li $t5,0       #initialize counter j
+
+populateB2:
+	bge $t5,$t2,populateB1  #check if j<n.if false then break and go for incrementing i.
+	add $fp,$fp,-4          #add 4 to frame pointer to move to next location 
+	sw 	$t6,0($fp)          #store the current seed value(Xn) in t6
+	mul $t6,$t6,330
+	add $t6,$t6,100
+	rem $t6,$t6,2303        #calculate next random number
+	add $t5,$t5,1           #increment counter j by 1
+	b populateB2            #continue to loop. 
+
+callmatprint:               #printing matrices
+	mul $t3,$t1,$t2
+	mul $t3,$t3,8
+	add $fp,$fp,$t3         #adjusting frame pointer to point to matrix A
+	add $s0,$fp,-4 			#s0=address of A[0][0]
+	li $v0,4
+	la $a0,label2   		
+	syscall 		        #print the string "Elements of A:"		
+	jal matPrint            #call matprint function to print matrix A
+	li $v0,4
+	la $a0,label3          
+	syscall 				#print the string "Elements of B:"		
+	add $s1,$fp,-4 			#s1=address of B[0][0]
+	jal matPrint 			#call matprint function to print matrix B
+	add $s2,$fp,-4 			#s2=address of C[0][0]
+	add $fp,$fp,$t3
+	add $sp,$sp,-16
+	sw $t1,0($sp)
+	sw $s2,4($sp)
+	sw $s1,8($sp)
+	sw $s0,12($sp)
+	b exit
+exit:
+	li $v0,10
+	syscall                 #exit from program
+matPrint:
+	li $t4,-1               #initialize counter i with -1
+printRow: 
+	add $t4,$t4,1   		#increment counter t4
+	li $v0,4
+	la $a0,label5   		
+	syscall 				#print newline
+	bge $t4,$t1,returntomain#check if i<m.if false then return to callee
+	li $t5,0                #initialize counter j with 0
+printCol:
+	bge $t5,$t2,printRow    #check if j<n.if false then go for incrementing i
+	add $fp,$fp,-4          #adjust frame pointer to move to next memory
+	lw 	$a0,0($fp)          #load value of current memory in register a0
+	li $v0,1
+	syscall                 #print the value stored in a0(that is value ar[i][j])
+	li $v0,4
+	la $a0,label4   		
+	syscall                 #print space
+	add $t5,$t5,1           #increment j
+	b printCol              #continue to loop
+returntomain:
+	jr $ra                  #return to callee
+
+matMul:
+	lw $s0 , 0($sp)   # s0 = 2^b
+    lw $s1 , 4($sp)   # s1 = &C[0][0]
+    lw $s2 , 8($sp)   # s2 = &B[0][0]
+    lw $s3 , 12($sp)  # s3 = &A[0][0]
+    add $sp, $sp, -4
+    sw $ra, 0($sp)
+    sra $s0,$s0,1
+    mul $t4,$s0,$s0
+    mul $t4,$t4,-80
+    add $sp,$sp,$t4
+	li $t4,-1
+init1a:
+	add $t4,$t4,1
+	bge $t4,$s0,matprint_1
+	li $t5,0
+init1b:
+	bge $t5,$s0,init1a
+	#A1
+	mul $t6,$s0,$t4 	
+	add $t6,$t6,$t5
+	mul $t6,$t6,4 	#t6 = 4*(n/2*i+j)
+	add $sp,$sp,$t6 #sp at a1[i][j]
+	sub $s3,$s3,$t6 #s3 at a[i][j]
+	lw $a0,0($s3)
+	sw $a0,0($sp)   #stored 
+	add $s3,$s3,$t6
+	mul $t6,$t6,-1
+	add $sp,$sp,$t6
+	mul $t6,$t6,-1  #s3 and sp restord to original place
+	#B1
+	mul $t7,$s0,$s0
+	mul $t7,$t7,16  #t7=16*n/2*n/2
+	add $sp,$sp,$t7 #sp at B1[0][0]
+	sub $s2,$s2,$t6
+	add $sp,$sp,$t6 
+	lw $a0,0($s3)
+	sw $a0,0($sp)   
+	add $s2,$s2,$t6
+	mul $t6,$t6,-1
+	add $sp,$sp,$t6
+	mul $t7,$t7,-1
+	add $sp,$sp,$t7
+	mul $t6,$t6,-1
+	mul $t7,$t7,-1
+	#A2
+	move $a1,$t6      #a1=4*n/2*i+4*j
+	sla $s0,$s0,4
+	add $t6,$t6,$s0   #t6=4*(n/2*i+j+n/2)
+	sra $s0,$s0,2
+	mul $a0,$s0,$s0
+	mul $a0,$a0,4     #a0=4*n/2*n/2
+	add $sp,$sp,$a0   #sp at starting of a1
+	add $sp,$sp,$a1   #sp at a1[i][j]
+	sub $s3,$s3,$t6   #s3 at A[i][j+n/2]
+	lw $a3,0($s3)
+	sw $a3,0($sp)
+	add $s3,$s3,$t6
+	sub $sp,$sp,$a1
+	sub $sp,$sp,$a0
+	#B2
+	
+	b init1b
+
+matAdd:
+	li $t4,-1
+loop1:
+	add $t4,$t4,1
+	bge $t4,$t1,returntomatMul
+	li $t5,0
+loop2:
+	bge $t5,$t1,loop1 #s6(A), s5(B) , s4(C)
+	lw $a0,0($s6)	#a0 = A[i][j]
+	lw $a1,0($s5)	#a1 = B[i][j]
+	add $a0,$a0,$a1 #a0 = A[i][j] + B[i][j]
+	sw $a0,0($s4) 	
+	add $s6,$s6,-4
+	add $s4,$s4,-4
+	add $s5,$s5,-4
+	b loop2
+returntomatMul:
+	jr $ra
