@@ -1,0 +1,42 @@
+#Aim
+
+Handling of local variables in subroutines by allocating space on stack.
+Handling (local) arrays in MIPS
+Assignment statement
+
+#Write a MIPS program which:
+
+allocates space on stack for a local integer variable n and a local array A of integers; give comments indicating how you would access in your program the memory location corresponding to n and A[i].
+[Hint: Use the frame pointer $fp -- refer to pp A-23 --A-26 in Appendix A of Hennesey and Patterson for identifying how local variables are allocated space on the stack dynamically on entry to subroutines (recall that the main routine can be viewed as a subroutine for code generation) and the allocation is undone before exit thereby maintaining the locality of the local variables, incontrast to the global variables defined through the .rdata assembler commands.]
+
+reads an integer with the prompt -- "Enter the count of elements to be read:"
+reads that many integers (n) into an array, prompting for each integer -- "Enter the next element:"
+finds the second largest among the n array elements and
+prints the same within the message -- "The second largest number among [⟨comma separate list of the numbers in the array⟩] is ⟨the second largest number⟩."
+Relevant documentation is made available via the notice page.
+
+#Marking Guidelines
+
+Assignment marking is to be done only after the deadline expires, as submissions gets blocked after the assignment is marked.
+
+Marks are to the awarded as per the components indicated below.
+
+Interactive interface, as specified	4
+Allocation of local variables on stack	8
+Appropriately accessing the local variables	5
+Commenting of program	3
+Total Marks	20
+The breakup of marks should be entered as remarks as the sum of the marks given for each component (eg: 4+7+5+2)
+
+Any deficiency in the student submission should also be entered as remarks (eg: "(b) global variables used instead of local variables (0/8); (d) comments are grossly inadequate (0/3)").
+
+Assignment submission
+
+Ensure that your program has the extension ".spim" (say perf.spim)
+
+You name, roll number, group number, etc. should be available at the top of your submitted file, as comments.
+
+You should also pick up your assignment statement and submit your assignment via the student tab of this course page.
+
+You should keep submitting your incomplete assignment from time to time after making some progress, as you can submit any number of times before the deadline expires.
+
