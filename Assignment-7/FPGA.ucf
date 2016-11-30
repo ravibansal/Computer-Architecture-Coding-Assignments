@@ -1,0 +1,56 @@
+//Assignment 7
+//Group 49
+//Ravi Bansal 13CS30026
+//Sayan Mukhopadhyay 13CS30028
+//UCF File
+net "a[0]" loc = "p191";
+net "a[1]" loc = "p190";
+net "a[2]" loc = "p196";
+net "a[3]" loc = "p194";
+net "a[4]" loc = "p198";
+net "a[5]" loc = "p197";
+net "a[6]" loc = "p200";
+net "a[7]" loc = "p199";
+net "a[8]" loc = "p5";
+net "a[9]" loc = "p7";
+net "a[10]" loc = "p3";
+net "a[11]" loc = "p4";
+net "a[12]" loc = "p205";
+net "a[13]" loc = "p2";
+net "a[14]" loc = "p203";
+net "a[15]" loc = "p204";
+net "b[0]" loc = "p27";
+net "b[1]" loc = "p28";
+net "b[2]" loc = "p24";
+net "b[3]" loc = "p26";
+net "b[4]" loc = "p21";
+net "b[5]" loc = "p22";
+net "b[6]" loc = "p19";
+net "b[7]" loc = "p20";
+net "b[8]" loc = "p10";
+net "b[9]" loc = "p9";
+net "b[10]" loc = "p12";
+net "b[11]" loc = "p11";
+net "b[12]" loc = "p15";
+net "b[13]" loc = "p13";
+net "b[14]" loc = "p18";
+net "b[15]" loc = "p16";
+net "sum[0]" loc = "p139";
+net "sum[1]" loc = "p140";
+net "sum[2]" loc = "p137";
+net "sum[3]" loc = "p138";
+net "sum[4]" loc = "p133";
+net "sum[5]" loc = "p135";
+net "sum[6]" loc = "p131";
+net "sum[7]" loc = "p132";
+net "sum[8]" loc = "p149";
+net "sum[9]" loc = "p150";
+net "sum[10]" loc = "p147";
+net "sum[11]" loc = "p148";
+net "sum[12]" loc = "p144";
+net "sum[13]" loc = "p146";
+net "sum[14]" loc = "p141";
+net "sum[15]" loc = "p143";
+net "cout" loc = "p156";
+net "PG"  loc = "p152";
+net "GG" loc = "p154";
