@@ -1,0 +1,83 @@
+Aim
+
+Carrying out structural design of combinational circuits using the Computer Organisation and Logic Design Virtual Lab (COLDVL) tool
+Structural coding of the design in Verilog as a module
+Behavioural coding of a Verilog test bench to test the designed module
+Synthesising the designed module on the FPGA kit and testing it
+Assignment statement
+
+Design an excess-3 to seven segment decoder for a common anode LED display.
+
+Inputs will be 4-bit excess-3 coded decimal digits; seven low active output lines will drive the corresponding seven segments of the common anode LEDs.
+
+Each of the seven functions corresponding to the seven outputs should be minimised using Karnaugh's maps. Common terms among the functions may be shared to avoid duplication.
+
+Realise the functions in the COLDVL tool and simulate them to test for correctness -- cf. the user manual on the tool page, the simulator may be downloaded from "Experiment" tab of any of the listed experiments in the tool page.
+
+Next, encode the design in Verilog as a module and also write a suitable behavioral test bench module. An online documentation on Verilog is available here.
+
+Simulate the design using the Verilog simulator available with the FPGA kit.
+
+Synthesise the designed decoder module on the FPGA kit and test it by feeding inputs from the keyboard and displaying the outputs through the LEDs available on the kit and then through a 7-segment LED display connected externally.
+
+Introductory example for getting started with Verilog
+
+Implementing a simple arbitrary Boolean function
+
+Using primitive Verilog gates, implement the Boolean function: ab + a'. Name this module first_module. Write a test bench - test_first - to examine the outputs for varying input combinations.
+
+Here is what your Verilog code would look like:
+
+    module notGate(out, a);
+        output   out;
+        input    a;
+        assign   out = ~a;
+    endmodule
+
+    module and2Gate(out, a, b);
+        output   out;
+        input    a, b;
+        assign   out = a & b;
+    endmodule
+
+    module or2Gate(out, a, b);
+        output   out;
+        input    a, b;
+        assign   out = a | b;
+    endmodule
+
+    module first_module(out, a, b);
+        output   out;
+        input    a, b;
+        wire     a1, a2;
+
+        notGate    n1(a1, a);
+        and2Gate   and1(a2, a, b);
+        or2Gate    or1(out,a1,a2);
+    endmodule
+
+    module testbench_first();
+        reg    a, b;
+        wire   out;
+
+        first_module fm(out,a,b);
+
+        initial begin
+            $monitor ($time,"\ta=%b\tb=%b\tout=%b",a,b,out);
+            a = 0; b = 0;
+            #1 a = 0; b = 1;
+            #1 a = 1; b = 0;
+            #1 a = 1; b = 1;
+        end
+
+    endmodule
+Enter this code into your text editor (vi or emacs). Compile and run this program using the Verilog simulator.
+
+As a convention you should name the test bench of a module m as testbench_m
+
+Output after compiling and running the example
+
+                   0    a=0     b=0     out=1
+                   1    a=0     b=1     out=1
+                   2    a=1     b=0     out=0
+                   3    a=1     b=1     out=1
