@@ -1,0 +1,356 @@
+//Name-Ravi Bansal
+//Roll-13CS30026
+//Group-49
+
+
+Instruction Fetch for all instructions:-
+	We read PC and put it on data bus.MAR reads it from data bus,and provides input to address of memory.We read M[PC] and put it in MDR.We put the MDR in IR by the use of databuses.We increment the PC.
+	MAR=PC;
+	MDR=M[MAR];
+	IR=MDR;
+	PC=PC+2;
+For each instruction IRWrite signal is made 0 after fetch stage is over.IRwrite signal is enabled again after completion of the instruction.
+
+
+1.Load Instruction:-
+Mode:-Immediate
+		Instruction fetched.
+		Reg[IR[11:9]]=M[PC];
+		PC=PC+2;
+Mode:-Register
+		Instruction fetched.
+		Reg[IR[11:9]]=Reg[IR[5:3]];
+Mode:-Base Indexed
+	Instruction fetched.
+	B=Reg[IR[5:3]];
+	ALUopt=B+Reg[IR[2:0]];
+	ALUopt=ALUopt+M[PC];
+	MDR=M[ALUopt];
+	Reg[IR[11:9]]=MDR;
+	PC=PC+2;
+Mode:-Base addressing
+	Instruction Fetched.
+	B=Reg[IR[5:3]];
+	ALUopt=B+M[PC];
+	MDR=M[ALUopt];
+	Reg[IR[11:9]]=MDR;
+	PC=PC+2;
+Mode:-Memory Indirect
+	Instruction Fetched.
+	B=Reg[IR[5:3]];
+	ALUopt=B+Reg[IR[2:0]];
+	ALUopt=ALUopt+M[PC];
+	MAR=ALUopt;
+	MDR=M[MAR];
+	MAR=MDR;
+	MDR=M[MAR];
+	Reg[IR[11:9]]=MDR;
+	PC=PC+2;
+
+
+2.Store Instruction
+
+Mode:-Base addressing
+	Instruction Fetched.
+	B=Reg[IR[11:9]];
+	ALUopt=B+M[PC];
+	MDR=Reg[IR[5:3]];
+	MAR=ALUopt;
+	M[MAR]=MDR;
+	PC=PC+2;
+
+Mode:-Indirect
+	Instruction Fetched.
+	B=Reg[IR[11:9]];
+	ALUopt=B+M[PC];
+	MDR=Reg[IR[5:3]];
+	MAR=ALUopt;
+	MDR=M[MAR];
+	MAR=MDR;
+	MDR=M[MAR];
+	MAR=MDR;
+	MDR=Reg[IR[5:3]];
+	M[MAR]=MDR;
+	PC=PC+2;
+
+3. ALU instructions
+
+Mode-Immediate
+a) Add:-Instruction fetched.
+		B=Reg[IR[11:9]];
+		ALUopt=B+M[PC];
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+b) Sub:- Instruction fetched.
+		B=Reg[IR[11:9]];
+		ALUopt=B-M[PC];
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+c) And:-Instruction fetched.
+		B=Reg[IR[11:9]];
+		ALUopt=B & M[PC];
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+d) Or:- Instruction fetched.
+		B=Reg[IR[11:9]];
+		ALUopt=B | M[PC];
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+e) Cmp:- Instruction fetched.
+		 B=Reg[IR[11:9]];
+		 ALUopt=0-B;
+		 Reg[IR[11:9]]=ALUopt;
+		 PC=PC+2;
+Mode:-Register
+
+a) Add:-Instruction fetched.
+		B=Reg[IR[11:9]];
+		ALUopt=B+Reg[IR[5:3]];
+		Reg[IR[11:9]]=ALUopt;
+b) Sub:- Instruction fetched.
+		B=Reg[IR[11:9]];
+		ALUopt=B-Reg[IR[5:3]];
+		Reg[IR[11:9]]=ALUopt;
+c) And:-Instruction fetched.
+		B=Reg[IR[11:9]];
+		ALUopt=B & Reg[IR[5:3]];
+		Reg[IR[11:9]]=ALUopt;
+d) Or:- Instruction fetched.
+		B=Reg[IR[11:9]];
+		ALUopt=B | Reg[IR[5:3]];
+		Reg[IR[11:9]]=ALUopt;
+
+Mode:-Base indexed
+
+a) Add:-Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=B+Reg[IR[2:0]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]]+B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+b) Sub:- Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=B+Reg[IR[2:0]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]]-B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+c) And:-Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=B+Reg[IR[2:0]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]] & B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+d) Or:- Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=B+Reg[IR[2:0]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]] | B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+
+Mode:- Base addressing
+
+a) Add:-Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]]+B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+b) Sub:- Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]]-B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+c) And:-Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]] & B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+d) Or:- Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]] | B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+
+Mode:- Indirect
+
+
+a) Add:-Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=B+Reg[IR[2:0]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		MAR=MDR;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]]+B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+b) Sub:- Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=B+Reg[IR[2:0]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		MAR=MDR;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]]-B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+c) And:-Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=B+Reg[IR[2:0]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		MAR=MDR;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]] & B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+d) Or:- Instruction fetched.
+		B=Reg[IR[5:3]];
+		ALUopt=B+Reg[IR[2:0]];
+		ALUopt=ALUopt+M[PC];
+		MAR=ALUopt;
+		MDR=M[MAR];
+		MAR=MDR;
+		MDR=M[MAR];
+		B=MDR;
+		ALUopt=Reg[IR[11:9]] | B;
+		Reg[IR[11:9]]=ALUopt;
+		PC=PC+2;
+
+Jump Instrcutions:-
+
+1.j (jump unconditionally)
+	Instruction Fetched.
+	B=PC;
+	ALUopt=B+M[PC];
+	PC=ALUopt;
+2. jz
+	 Instruction fetched.
+	 B=PC;
+	 ALUopt=B+2;
+	 if(ZERO flag is set)
+	 	B=PC;
+	 	PC=B+M[PC];
+	 else
+	 	PC=ALUopt;
+3. jnz
+	 Instruction fetched.
+	 B=PC;
+	 ALUopt=B+2;
+	 if(Zero flag not set)
+	 	B=PC;
+	 	PC=B+M[PC];
+	 else
+	   PC=ALUopt;
+2. jc
+	 Instruction fetched.
+	 B=PC;
+	 ALUopt=B+2;
+	 if(CARRY flag is set)
+	 	B=PC;
+	 	PC=B+M[PC];
+	 else
+	 	PC=ALUopt;
+3. jnc
+	 Instruction fetched.
+	 B=PC;
+	 ALUopt=B+2;
+	 if(CARRY flag not set)
+	 	B=PC;
+	 	PC=B+M[PC];
+	 else
+	   PC=ALUopt;
+2. jv
+	 Instruction fetched.
+	 B=PC;
+	 ALUopt=B+2;
+	 if(OVERFLOW flag is set)
+	 	B=PC;
+	 	PC=B+M[PC];
+	 else
+	 	PC=ALUopt;
+3. jnv
+	 Instruction fetched.
+	 B=PC;
+	 ALUopt=B+2;
+	 if(OVERFLOW flag not set)
+	 	B=PC;
+	 	PC=B+M[PC];
+	 else
+	   PC=ALUopt;
+2. jm
+	 Instruction fetched.
+	 B=PC;
+	 ALUopt=B+2;
+	 if(MINUS flag is set)
+	 	B=PC;
+	 	PC=B+M[PC];
+	 else
+	 	PC=ALUopt;
+3. jnm
+	 Instruction fetched.
+	 B=PC;
+	 ALUopt=B+2;
+	 if(MINUS flag not set)
+	 	B=PC;
+	 	PC=B+M[PC];
+	 else
+	   PC=ALUopt;
+
+
+Subroutine call:-
+
+Instruction fetched.
+B=PC;
+ALUopt=B+2;
+Reg[IR[11:9]]=ALUopt;
+B=PC;
+MAR=B;
+MDR=M[MAR];
+ALUopt=B+MDR;
+PC=ALUopt;
+
+Subroutine return:-
+
+Instruction fetched.
+PC=Reg[IR[11:9]];
+
+
+

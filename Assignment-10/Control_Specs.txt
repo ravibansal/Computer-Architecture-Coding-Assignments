@@ -1,0 +1,26 @@
+//Name-Ravi Bansal
+//Roll No- 13CS30026
+//Group-49
+
+Control Signals:-
+
+1.MemRead:- Memory reads the data present at address MAR and stores in MDR if the MemRead signal is set.
+2.MemWrite:- Data present in MDR gets written at memory address MAR.
+3.PCwrite:-If PCwrite is enabled then the data present in data bus gets written in PC.
+4.IRwrite:-If IRwrite is enabled then the data present in data bus gets written in IR.
+5.Regwrite:-If Regwrite is enabled then the data present in data bus gets written in Write register.
+6.SourceA:- Select either data from databus or 0 will be selected for first opernad of ALU.
+7.SourceB:- Select either data from databus from register B or 1 will be input for second operand of ALU.
+8.FlagSelect:- Signal for selecting the flag on the basis of status bits.It will be 2bits
+9.CondSignal:- Signal for checking if the jump is conditional or unconditional.It is 1 bit signal.
+10.MDRsrc:-Signal for selecting data to be written to MDR.Either data from bus or data from read port of memory will get selected.
+11.ALUop:-It is the input to ALU control unit.
+12.MDRwrite:-If the signal is enabled then data from data bus or memory  gets written.
+13.PCBus:-If the signal is enabled then PC gets dumped into data bus.
+14.MABus:-If the signal is enabled then data of MAR gets dumped into memory address bus.
+15.MD1BUS:-If the signal is enabled then data of MDR gets dumped into memory data bus.
+16.RegSelect:-To select the read/write register from Instruction from IR to register file.
+17.RegBwrite:-If the signal is enabled then data from data bus is written on Register B.
+18.ALUBus:-If the signal is enabled then data from either ALUopt or ALU gets dumped into data bus.
+19.RFBus:-If the signal is enabled then data read from register file gets dumped into data bus.
+20.MD2Bus:-If the signal is enabled then data of MDR gets dumped into data bus.
