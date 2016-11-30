@@ -1,0 +1,28 @@
+Aim
+Matrix Multiplication
+Writing a recursive function subprogram in MIPS
+Dynamically allocating variables on the stack
+Passing parameters to functions by value
+Passing arrays to functions by their address
+Assignment statement
+
+The product of two matrices A×B=C may be recursively defined as:
+
+[C11C21C12C22]=[A11A21A12A22][B11B21B12B22]=[A11B11+A12B21A21B11+A22B21A11B12+A12B22A21B12+A22B22][C11C12C21C22]=[A11A12A21A22][B11B12B21B22]=[A11B11+A12B21A11B12+A12B22A21B11+A22B21A21B12+A22B22], 
+where A=[A11A21A12A22]A=[A11A12A21A22], B=[B11B21B12B22]B=[B11B12B21B22] and C=[C11C21C12C22]C=[C11C12C21C22]
+
+The decomposition is done so that the sub-matrices have half the number of rows and columns as the original matrix and the base case being handled as [a][b]=[ab][a][b]=[ab].
+
+Write a function matMul that is passed the following parameters: (positive) integers m, w and n and addresses of three arrays A (of m rows and w columns), B (of w rows and n columns) and C (of m rows and n columns). It is to multiply the two given arrays A and B treating them as matrices and store the resulting sum in the array C. The multiplication is to be done recursively, as indicated.
+
+Write a MIPS program which:
+prompts the user for two positive integers s, and b as "Enter two positive integers s, b: "
+compute m=n=2b
+allocates space for three m×n arrays A, B and C on the stack
+populates the arrays A and B with random numbers generated using the linear congruential scheme: Xn+1 = (aXn+c) mod m, taking a=7×47+1, c=100 and m = 482-1
+For generating the elements of A, let X0 = s. For generating the elements of B, let X0 = s+10.
+
+print the elements of A and B using matPrint as specified in an earlier assignment
+multiply the matrices A and B into C using matMul, for each invocation, print the matrices A and B an also the resulting product C
+print the elements of C using matPrint
+You may use functions that you have already developed in your earlier assi
