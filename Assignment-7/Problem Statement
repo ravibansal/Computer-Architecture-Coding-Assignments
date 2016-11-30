@@ -1,0 +1,58 @@
+Aim
+
+Understanding the design of the CLA using the carry generate and carry propagate functions to limit the cost of the adder
+Understand the speed-cost tradeoff of the design wrt to the theoretical CLA design
+Assignment statement
+
+You are required to build a sixteen bit carry lookahead adder using full adders and carry generate and carry propagate function logic.
+
+You should also have a test bench to test your design with inputs. Since this is a bigger design, you should test the design selectively via your test bench.
+
+Background on a Block Carry Lookahead Adder
+
+Carry lookahead logic uses the concepts of generating and propagating carries. Although in the context of a carry lookahead adder, it is most natural to think of generating and propagating in the context of binary addition, the concepts can be used more generally than this. In the descriptions below, the word digit can be replaced by bit when referring to binary addition.
+
+The addition of two 1-digit inputs A and B is said to generate if the addition will always carry, regardless of whether there is an input carry (equivalently, regardless of whether any less significant digits in the sum carry). For example, in the decimal addition 52 + 67, the addition of the tens digits 5 and 6 generates because the result carries to the hundreds digit regardless of whether the ones digit carries (in the example, the ones digit clearly does not carry).
+
+In the case of binary addition, A + B generates if and only if both A and B are 1. If we write G(A,B) to represent the binary predicate that is true if and only if A + B generates, we have:
+
+G(A, B) = A · B
+The addition of two 1-digit inputs A and B is said to propagate if the addition will carry whenever there is an input carry (equivalently, when the next less significant digit in the sum carries). For example, in the decimal addition 37 + 62, the addition of the tens digits 3 and 6 propagate because the result would carry to the hundreds digit if the ones were to carry (which in this example, it does not). Note that propagate and generate are defined with respect to a single digit of addition and do not depend on any other digits in the sum.
+
+In the case of binary addition, A + B propagates if and only if at least one of A or B is 1. If we write P(A,B) to represent the binary predicate that is true if and only if A + B propagates, we have:
+
+P(A,B) = A + B
+Sometimes a slightly different definition of propagate is used. By this definition A + B is said to propagate if the addition will carry whenever there is an input carry, but will not carry if there is no input carry. It turns out that the way in which generate and propagate bits are used by the carry lookahead logic, it doesn't matter which definition is used. In the case of binary addition, this definition is expressed by:
+
+P'(A,B) = A ⊕ B
+For binary arithmetic, or is faster than xor and takes less transistors to implement, and therefore P(A,B) is usually used instead of P'(A,B). However, for a multiple-level carry lookahead adder, it is simpler to use P'(A,B)
+
+Given these concepts of generate and propagate, when will a digit of addition carry? It will carry precisely when either the addition generates or the next less significant bit carries and the addition propagates. Written in boolean algebra, with Ci the carry bit of digit i, and Pi and Gi the propagate and generate bits of digit i respectively,
+Ci+1 = Gi + (Pi · Ci)
+Implementation scheme
+
+For each bit in a binary sequence to be added, the Carry Look Ahead Logic will determine whether that bit pair will generate a carry or propagate a carry. This allows the circuit to "pre-process" the two numbers being added to determine the carry ahead of time. Then, when the actual addition is performed, there is no delay from waiting for the ripple carry effect (or time it takes for the carry from the first Full Adder to be passed down to the last Full Adder). Below is a simple 4-bit generalized Carry Look Ahead circuit that combines with the 4-bit Ripple Carry Adder we used above with some slight adjustments:
+
+4-bit Carry Lookahead Adder
+The schematics of a standard full adder (left) and a modified full adder (right) relevant for this assignment to be used here is given below:
+
+4-bit Carry Lookahead Adder
+For any circuit larger than 4 bits, the Carry Look Ahead circuitry becomes very complicated. For the example provided, the logic for the generate (g) and propagate (p) values are given below. Note that the numeric value determines the signal from the circuit above, starting from 0 on the far left to 3 on the far right:
+
+C1 = G0 + P0 · C0
+C2 = G1 + P1 · C1 = G1 + P1 · G0 + P1 · P0 · C0
+C3 = G2 + P2 · C2 = G2 + P2 · G1 + P2 · P1 · G0 + P2 · P1 · P0 · C0
+C4 = G3 + P3 · C3 = G3 + P3 · G2 + P3 · P2 · G1 + P3 · P2 · P1 · G0 + P3 · P2 · P1 · P0 · C0
+The Carry Look Ahead 4-bit adder can also be used in a higher-level circuit by having each CLA Logic circuit produce a propagate and generate signal to a higher-level CLA Logic circuit. The group propagate (PG) and group generate (GG) for a 4-bit CLA are:
+
+PG = P0 · P1 · P2 · P3
+GG = G3 + G2 · P3 + G1 · P3 · P2 + G0 · P3 · P2 · P1
+Putting four 4-bit CLAs together yields four group propagates and four group generates. A Lookahead Carry Unit (LCU) takes these eight values and uses identical logic to calculate Ci in the CLAs. The LCU then generates the carry input for each of the 4 CLAs and a fifth equal to C16.
+
+Design organisation
+
+Your Verilog design should be in four files as follows:
+1-bit Full Adder for CLA (with G and P outputs) and its test bench
+4-bit Carry Look Ahead Unit and its test bench
+4-bit Carry Look Ahead Adder (using the above two components) and its test bench
+16-bit Block Carry Look Ahead Adder (using 4-bit Carry Look Ahead Adders and a 4-bit Carry Look Ahead Unit) and its test bench
