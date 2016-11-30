@@ -1,0 +1,35 @@
+Aim
+
+Behavioural encoding of a finite state machine (FSM) in COLDVL
+Carrying out structural design of sequential circuits using the Computer Organisation and Logic Design Virtual Lab (COLDVL) tool
+Structural coding of the design in Verilog as a module
+Behavioural coding of a Verilog test bench to test the designed module
+Synthesising the designed module on the FPGA kit and testing it
+Behavioural encoding of a finite state machine (FSM) in Verilog
+Assignment statement
+
+Design of a sequence detector for sequences over {0, 1} which produces an ouput value of 1 if and only if, in the sequence of bits received so far, the number of 0s divided by 2 is 1 and the number of 1s divided by 3 is 1.
+
+For testing use a 5-bit circular shift register that is preloaded with a suitable pattern, to supply the input sequence to the detector through its serial output.
+
+Realise the detector FSM (behaviourally) in COLDVL using the FSM design facility in the tool. Realise the circular shift register (structurally) in COLDVL and simulate them together to test for correctness.
+
+Do a paper design of the detector (structurally) as optimally as possible, using JK flip flops to realise the sequential circuit.
+
+Realise the sequence detector and circular shift register in the COLDVL tool and simulate them together to test for correctness.
+
+Next, encode the structural design in Verilog as a module and also write a suitable behavioral test bench module.
+
+Simulate the design using the Verilog simulator available with the FPGA kit.
+
+Synthesise the designed sequence detector module on the FPGA kit and test it by feeding inputs from the keyboard and displaying the outputs through the LEDs available on the kit. NB: the bits of the sequence are to be fed through a latched key; the clock is to be fed through a debounced push button in the FPGA kit.
+
+Do a behavioural design of the detector FSM in Verilog.
+
+Reusing the same test harness developed for the structural detector, simulate the design using the Verilog simulator available with the FPGA kit.
+
+Synthesise the behvioural sequence detector module on the FPGA kit and test it exactly the same way as the structural detector FSM was tested.
+
+Example for encoding the behaviour of a FSM in Verilog
+
+The design of an arbiter (which is a finite state machine) is documented in the asic-world pages.
