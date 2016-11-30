@@ -1,0 +1,198 @@
+Instruction format:-
+
+Instruction will be of either 16bits or 32bits.Instructions with register addressing will have a size of 16bits,where instruction of all other modes will be 32 bits in size.
+
+The first 16 bits of instruction will have the format as following:-
+
+ --------------------------
+ |OPCODE|OPERAND1|OPERAND2|
+ --------------------------
+
+The next 16 bits of the instruction in modes except than register addressing will contain an offset in case of Based-indexed , based indirect addressing , indirect adressing and PC relative addressing.The next 16 bits will contain an 16bit operand value in case of immediate addressing.
+
+There are seven registers(r0-r7).Therefore we will require 3 bit numbers to identify.Operand 1 will consist of 3 bits.We have 6 different type of modes which can be identified by 3 bits.Operand 2 will consist of 9 bits.First 3 bits contains the mode.The middle 3 bits contains register 2nd if required and the last 3 bits also contains a register which can be selected depending on the modes.The remaining 4 bits are assigned to opcode
+
+Therefore Instr[15:12] represnts opcode.
+Instr[11:9] represnts operand1.
+Instr[8:0] contains operand2.
+The next 16 bit word contains a displacement or constant value depending on the mode.
+
+There are total 4 classes of instruction.
+1.Data Movement(load,store)-->Two different types of instruction.
+2.ALU(add,sub,or,and,cmp)--> Therefore 5 different types of instructions.We will identify different modes by first 3 bits of operand2.
+3.Jump-->One type of instruction.
+4.Subroutine call and routine -->Two type of instruction.
+
+Therefore we have 10 different types of instructions.We can represent them by 4 bit opcode.The assigned opcode will be as always.We group the instruction in two parts->Non ALU and ALU.
+
+Non ALU operations:-
+
+1.Load      -0000
+2.store     -0001
+3.Jump		-0010
+4.Subcall	-0011
+5.Subreturn	-0100
+
+ALU operations:-
+
+1.And 		-1000
+2.Or 		-1001
+3.Add 		-1010
+4.Sub 		-1011
+5.Cmp 		-1100
+
+Instruction format for data movement(load/store):-
+
+ --------------------------    ---------------------------
+ |OPCODE|OPERAND1|OPERAND2|	   |  DISPLACEMENT/CONSTANT  |
+ --------------------------    ---------------------------
+  4bits   3bits    9bits                  16bits
+
+
+1.Load:-
+  Opcode-0000
+  Operand1:-destination register
+  Operand2:-
+  		First 3 bits:-Mode
+  		Middle 3 bits:-Depending on mode
+  		Last 3 bits:-Depending on mode
+  Displacemet/Constant - 16 bits of the next word.Either contains a offset value or constant value depending on the mode.
+
+2.Store:-
+  Opcode-0001
+  Operand1:-destination register
+  Operand2:-
+  		First 3 bits:-Mode
+  		Middle 3 bits:-Depending on mode
+  		Last 3 bits:-Depending on mode
+  Displacemet/Constant - 16 bits of the next word.Either contains a offset value or constant value depending on the mode.
+
+
+ Instruction Format for ALU(add,sub,and,or,cmp):-
+
+ --------------------------    ---------------------------
+ |OPCODE|OPERAND1|OPERAND2|	   |  DISPLACEMENT/CONSTANT  |
+ --------------------------    ---------------------------
+  4bits   3bits    9bits                  16bits  
+
+  1.Add
+  	 Opcode-1010
+  	 Operand1:-destination/source1 register
+  	 Operand2:-
+  		First 3 bits:-Mode
+  		Middle 3 bits:-Depending on mode
+  		Last 3 bits:-Depending on mode
+  	 Displacemet/Constant - 16 bits of the next word.Either contains a offset value or constant value depending on the mode.
+
+  2.Sub
+  	 Opcode-1011
+  	 Operand1:-destination/source1 register
+  	 Operand2:-
+  		First 3 bits:-Mode
+  		Middle 3 bits:-Depending on mode
+  		Last 3 bits:-Depending on mode
+  	 Displacemet/Constant - 16 bits of the next word.Either contains a offset value or constant value depending on the mode.
+
+  3.Cmp
+  	 Opcode-1011
+  	 Operand1:-source1 register
+  	 Operand2:- Doesn't matter
+  	 Displacemet/Constant - only 16 bit instruction
+
+  4.And
+  	 Opcode-1000
+  	 Operand1:-destination/source1 register
+  	 Operand2:-
+  		First 3 bits:-Mode
+  		Middle 3 bits:-Depending on mode
+  		Last 3 bits:-Depending on mode
+  	 Displacemet/Constant - 16 bits of the next word.Either contains a offset value or constant value depending on the mode
+
+  5.Or
+  	 Opcode-1001
+  	 Operand1:-destination/source1 register
+  	 Operand2:-
+  		First 3 bits:-Mode
+  		Middle 3 bits:-Depending on mode
+  		Last 3 bits:-Depending on mode
+  	 Displacemet/Constant - 16 bits of the next word.Either contains a offset value or constant value depending on the mode.
+
+
+ Instruction format for jump instructions:-
+
+ -------------------------------------------  ---------------------------
+ |OPCODE|XXXXXXX|STATUS FLAG|EQ/NQ|XXXXXXXX|  |  DISPLACEMENT/CONSTANT  |
+ -------------------------- ----------------  ---------------------------
+  4bits   3bits    2bits     1 bit    6bit              16bits  
+
+
+  1.j(unconditional jump):-
+  	Opcode:-0010
+  	Status flag-don't care
+  	Eq/nq-don't care
+  	Displacemet:-16 bit address to jump to
+
+  2.jz
+	Opcode:-0010
+  	Status flag-ZERO
+  	Eq/nq-0
+  	Displacemet:-16 bit address to jump to
+  3.jnz
+	Opcode:-0010
+  	Status flag-ZERO
+  	Eq/nq-1
+  	Displacemet:-16 bit address to jump to
+  4.jc
+	Opcode:-0010
+  	Status flag-CARRY
+  	Eq/nq-0
+  	Displacemet:-16 bit address to jump to
+  5.jnc
+	Opcode:-0010
+  	Status flag-CARRY
+  	Eq/nq-1
+  	Displacemet:-16 bit address to jump to
+  6.jv
+	Opcode:-0010
+  	Status flag-OVERFLOW
+  	Eq/nq-0
+  	Displacemet:-16 bit address to jump to
+  7.jnv
+	Opcode:-0010
+  	Status flag-OVERFLOW
+  	Eq/nq-1
+  	Displacemet:-16 bit address to jump to
+  8.jm
+	Opcode:-0010
+  	Status flag-SIGN
+  	Eq/nq-0
+  	Displacemet:-16 bit address to jump to
+  9.jnm
+	Opcode:-0010
+  	Status flag-SIGN
+  	Eq/nq-1
+  	Displacemet:-16 bit address to jump to
+
+
+ Instruction format for Subroutine call/return :-
+
+
+ --------------------------    ---------------------------
+ |OPCODE|OPERAND1|OPERAND2|	   |  DISPLACEMENT/CONSTANT  |
+ --------------------------    ---------------------------
+  4bits   3bits    9bits                  16bits  
+
+
+ 1.Subroutine call
+ 	Opcode:-0001
+ 	Operand1:-link register
+ 	Operand2:-
+ 			Mode-PC relative
+ 	Displacement Address:-subroutine address
+
+ 2.Subroutine address
+ 	Opcode:-0010
+ 	Operand1:-return register
+ 	Operend2:-don't care
+
+
