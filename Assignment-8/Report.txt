@@ -1,0 +1,147 @@
+Assignment  - 8
+Ravi Bansal
+13CS30026
+Group 49                                                                    
+Comparision of different multipliers
+                                                   
+1. Shift Add Multiplier
+                                                       
+Shift-and-add multiplication is similar to the multiplication performed by paper and pencil. This method adds the multiplicand X to itself Y times, where Y denotes the multiplier. To multiply two numbers by paper and pencil, the algorithms is to take the digits of the multiplier one at a time from right to left, multiplying the multiplicand by a single digit of the multiplier and placing the intermediate product in the appropriate positions to the left of the earlier results.
+
+No of cycles to multiply a n-bit number = n + k
+No of ALU operations = n
+
+Registers Used :  1 N bit register, 1 2N bit register
+Controller Complexity : Simple
+
+Here negative numbers cannot be directly multipled.
+
+                        
+2. Radix 2 Booth's Mutiplier
+                                                
+Booth's Algorithm is a smart move for multiplying signed numbers. It initiate with the ability to both add and subtract there are multiple ways to compute a product. Booth's algorithm is a multiplication algorithm that utilizes two's complement notation of signed binary numbers for multiplication. Booth's algorithm can be implemented by repeatedly adding (with ordinary unsigned binary addition) one of two predetermined values A and S to a product P, then performing a rightward arithmetic shift on P.
+ 
+ 
+No of clock cycles to multiply a n-bit number = n + k 
+No of ALU operation (in average case) = < n
+Registers Used :  1 N bit register, 1 2N bit register and 1 extra bit
+
+Controller complexity : Medium
+
+One advantage of booth multiplier is that negative numbers can also be multiplied in 2's complement form and in general incorporates much less ALU operations in  general.
+
+3. Radix-4 Booth's Multiplier
+                                            
+In comparison with the original Booth's algorithm, which examines two bits at a time, the modified algorithm scans last three bits and shifts the multiplier by 2 in each iteration and hence is much faster than a radix-2 multiplier.
+
+No of clock cycles to multiply a n-bit number = n/2 + k 
+No of ALU operation (in average case) = < n/2
+Registers Used :  1 N bit register, 1 2N bit register and 2 extra bit in product register
+
+Controller complexity : Higher due to increase in no of states and signals.
+
+
+                                Proof of Multiplication of negative numbers by Booth's Algorithm 
+                                
+Let a be the multiplier and b be the multiplicand and we’ll use a i to refer to bit i of a .Recasting Booth’s algorithm in terms of the bit values of the multiplier yields this table:
+
+a(i)    a(i-1)    Operation
+0         0        Do nothing
+0        1         Add b
+1        0        Subtract b
+1        1        Do nothing
+
+Instead of representing Booth’s algorithm in tabular form, we can represent it as the expression ( a(i-1) – a(i) ) where the value of the expression means the following actions:
+0 : do nothing
++1: add b
+–1: subtract b
+
+
+Since we know that shifting of the multiplicand left with respect to the Product register can be considered multiplying by a power of 2, Booth’s algorithm can be written as the sum
+
+
+  (a(-1) - a(0)) * 2^0
++ (a(0) - a(1)) * 2^1
++ (a(1) - a(2)) * 2^2
++ (a(2) - a(3)) * 2^3
+.
+.
+.
+.
+.
++ (a(n-1) - a(n)) * 2^n
+
+We can simplify this sum by noting that
+– a( i) × 2^i + a (i) × 2^(i+1) = (–a(i) + 2a(i) ) × 2^i = (2a(i) – a( i) ) × 2^i = a (i) × 2^i recalling that a( –1) = 0 and by factoring out b from each term:
+
+b × ((a(31) × –2^31 ) + (a(30) × 2^30 ) + (a(29) × 2^29 ) + . . . + (a(1) × 2^1 ) + (a(0) × 2^0 ))
+
+The long formula in parentheses to the right of the first multiply operation is simply the two’s complement representation of a. Thus, the sum
+is further simplified to
+                b × a
+Hence, Booth’s algorithm does in fact perform two’s complement multiplication of a and b.
+Hence Proved
+
+
+CONTROLLER DESIGN
+Radix-4 booth's multiplier:-
+
+Radix 4 Booth multiplier reduces the number of partial products to half in comparison the Radix-2 Booth's.Instead of shifting and adding for every column of the multiplier we take the second column and add +-1,+-2 or 0 accordingly.Grouping starts from LSB and the first block takes only last 2 bits and a additonal 0.
+
+The functional table of radix-4 booths multiplier is given below
+
+---------------------------------
+x(i+1) | x(i) | x(i-1) | Action |
+  0	   |  0	  |   0	   |    X   |
+  0	   |  1   |   0    |   +M   |
+  1	   |  0	  |   0	   |  -2M   |
+  1	   |  1   |   0    |   -M   |
+  0	   |  0	  |   1	   |   +M   |
+  0	   |  1   |   1    |  +2M   |
+  1	   |  0	  |   1	   |   -M   |
+  1	   |  1   |   1    |   --   |
+---------------------------------	
+
+
+The interesting point to note about booth's multiplier is that the multiplication is performed of two signed 2's compliment number.There is no need to assign the sign bit product checking the sign bits of multiplier and multiplicand.
+
+Radix-4 booth's multiplier takes lesser number of clock cycles to multiply two 16 bits numbers.Radix-2 booth's multiplier takes atmost half the clock cycles depending on runs of 0's and 1's to multiply in comparison to normal shift and add multiplier.The power and area for parallerl multipliers and much less compared to serial registers.Radix-4 consumes almost half the number of iterations and adders when compared to radix 2.
+
+The controller consists of 10 states.Depending on the states we generate various signals such as shift left/right,operations for alu etc.The input signals to fsm controller are ccheck,x0,x1,x2,clock,load.
+Ccheck is set if counter is zero.x0,x1,x2 are the last 3 bits of input.Load is 1 when we are required to load the multiplicand and multiplier.
+Output signals are shift,add,done,cnt_dwn,bit_invert,shift_m.
+Shift is set to shift left the product register.Add and bit_inverts will the inputs to ALU.cnt_dwn is for decreasing the counter.Done is for completion of multiplication.shift_m is for shifting the multiplicand for facilatating additon and subtraction os 2*M.
+Let the states be named as S0 to S10.
+
+State transition table:-
+
+-----------------------------------------------------------------------------------------------------------------------------
+Present State  |                  Inputs                |            Outputs                                 |   Next state |
+-----------------------------------------------------------------------------------------------------------------------------
+               | ccheck   |   x0  |   x1   | x2  | load | done | shift | shift_m | add | bit_invert | cnt_dwn|              |
+-----------------------------------------------------------------------------------------------------------------------------
+     S0        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+     S1        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+     S2        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+     S3        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+     S4        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |     
+     S5        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+     S6        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    | 
+     S7        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+     S8        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |  
+     S9        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+    S10        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+    S11        |     X    |   X  |    X    | X   |   1  |  0   |   0   |   0     |  0  |     0      |    0   |        S0    |
+     S0        |     X    |   X  |    X    | X   |   0  |  0   |   0   |   0     |  0  |     0      |    0   |        S1    |
+     S1        |     1    |   X  |    X    | X   |   0  |  0   |   0   |   0     |  0  |     0      |    0   |       S11    |
+     S1        |     0    |   0  |    0    | 0   |   0  |  0   |   0   |   0     |  0  |     0      |    0   |       S10    |
+     S1        |     0    |   0  |    0    | 1   |   0  |  0   |   0   |   0     |  1  |     0      |    0   |       S10    |
+     S1        |     0    |   0  |    1    | 0   |   0  |  0   |   0   |   0     |  1  |     0      |    0   |       S10    |
+     S1        |     0    |   0  |    1    | 1   |   0  |  0   |   0   |   1     |  1  |     0      |    0   |       S10    |
+     S1        |     0    |   1  |    0    | 0   |   0  |  0   |   0   |   1     |  1  |     1      |    0   |       S10    |
+     S1        |     0    |   1  |    0    | 1   |   0  |  0   |   0   |   0     |  1  |     1      |    0   |       S10    |
+     S1        |     0    |   1  |    1    | 0   |   0  |  0   |   0   |   0     |  1  |     1      |    0   |       S10    |
+     S1        |     0    |   1  |    1    | 1   |   0  |  0   |   0   |   0     |  0  |     0      |    0   |       S10    |
+    S10        |     0    |   X  |    X    | X   |   0  |  0   |   1   |   0     |  0  |     0      |    0   |        S1    |
+    S11        |     X    |   X  |    X    | X   |   0  |  1   |   0   |   0     |  0  |     0      |    0   |       S11    |
+-----------------------------------------------------------------------------------------------------------------------------
