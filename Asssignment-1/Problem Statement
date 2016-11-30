@@ -1,0 +1,37 @@
+
+#Aim
+
+To get acquainted with MIPS assembly language and the system calls.
+Assignment statement
+
+#Write a MIPS program which:
+
+reads an integer with the prompt -- "Enter a positive integer:"
+checks whether or not it is a perfect number -- i.e., whether its factors including 1 and excluding itself sum to itself, and
+accordingly prints the message -- "The ⟨entered number⟩ is (not) a perfect number"
+Relevant documentation is made available via the notice page.
+
+#Marking Guidelines
+
+Assignment marking is to be done only after the deadline expires, as submissions gets blocked after the assignment is marked.
+
+Marks are to the awarded as per the components indicated below.
+
+Interactive interface, as specified:	4
+Appropriate use of system calls for printing:	8
+Appropriate use of system call to read and integer:	5
+Commenting of program:	3
+Total Marks:	20
+The breakup of marks should be entered as remarks as the sum of the marks given for each component (eg: 4+7+5+2)
+
+Any deficiency in the student submission should also be entered as remarks (eg: "(d) comments are grossly inadequate (0/3)").
+
+Assignment submission
+
+Ensure that your program has the extension ".spim" (say perf.spim)
+
+You name, roll number, group number, etc. should be available at the top of your submitted file, as comments.
+
+You should also pick up your assignment statement and submit your assignment via the student tab of this course page.
+
+You should keep submitting your incomplete assignment from time to time after making some progress, as you can submit any number of times before the deadline expires.
